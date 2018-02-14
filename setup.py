@@ -6,7 +6,7 @@ import glob
 from setuptools import setup
 
 
-setup(name='CobraUtils', version='0.1.0', license='MIT',
+setup(name='cobra_services', version='0.1.0', license='MIT',
       url='https://github.com/cimbs/cobra_services',
       author='Dimitri Coukos',
       author_email='dimitri.coukos@epfl.ch',
