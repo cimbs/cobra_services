@@ -31,77 +31,20 @@ def brenda_query(EC_number, brenda_email="", brenda_pass=""):
     
     brenda_response = proxy.getTurnoverNumber(parameters)
 
+    # BRENDA returns a string, where entries are separated by '!'.
+    # Each entry consists of several key value pairs, separated by '#'.
+    # The key is separated from the value by '*'.
+
     treated_output = [{item.split('*')[0]: item.split('*')[1]
                        for item in entry.split('#') if len(item.split('*')) > 1} 
                       for entry in brenda_response.split('!')]
 
     return treated_output
-    # treated_output_by_substrate = treated_output
-    # new_entry = {}
-    # for entry in treated_output[ID]:
-    #     for data_point, description in entry.iteritems():
-    #         if data_point == 'substrate':
-    #             if description in new_entry:
-    #                 new_entry[description].append(entry)
-    #             else:
-    #                 new_entry[description] = []
-    # treated_output[ID] = new_entry
+
+
+def brenda_entry_is_wild_type(entry):
+    "True if this entry represents a wild-type measurement"
+    return entry.haskey('commentary') and 'wild' in entry['commentary']
 
 
 
-
-# def treatBrendaOutput(output):
-#     '''
-#     Removes unnecessary parameters from entries and
-#     checks to see if enzymes characterized were
-#     wild-type or mutant.
-#     '''
-#     treated_output = {}
-#     treated_output = {ID: [{item.split('*')[0]: item.split('*')[1] 
-#         for item in entry.split('#') 
-#         if len(item.split('*')) > 1} 
-#         for entry in output[ID].split('!')] for ID in output.keys()}
-
-#     treated_output_by_substrate = treated_output
-#     for ID in treated_output:
-#         new_entry = {}
-#         for entry in treated_output[ID]:
-#             for data_point, description in entry.iteritems():
-#                 if data_point == 'substrate':
-#                     if description in new_entry:
-#                         new_entry[description].append(entry)
-#                     else:
-#                         new_entry[description] = []
-#         treated_output[ID] = new_entry
-
-#     no_data = []
-
-#     for ID in treated_output: 
-#         if output[ID] == '':
-#             no_turnover_data.append(ID)
-#         else:
-#             empty = bool
-#             for substrate in treated_output[ID]:        
-#                 commentary_treated = False
-#                 wild_type = False
-#                 for entry in treated_output[ID][substrate]:
-#                     if entry == [] :
-#                         continue
-#                     else:
-#                         for key,value in entry.iteritems():
-#                             if (key == 'commentary') and 'wild' in value:
-#                                 wild_type = True
-#                                 commentary_treated = True
-#                             elif (key == 'commentary') and 'mutant' in value:
-#                                 wild_type = False
-#                                 commentary_treated = True
-#                         print(ID)
-#                         entry.pop('literature')
-#                         entry.pop('substrate')
-#                         entry.pop('ligandStructureId')
-#                         entry.pop('turnoverNumberMaximum')
-#                         entry.pop('commentary', 'No comment')
-#                         if wild_type:
-#                             entry['wild-type'] = True
-#                         elif not wild_type and commentary_treated:
-#                             entry['wild-type'] = False
