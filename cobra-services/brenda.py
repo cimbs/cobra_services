@@ -31,20 +31,26 @@ def brenda_query(EC_number, brenda_email="", brenda_pass=""):
     
     brenda_response = proxy.getTurnoverNumber(parameters)
 
+    return parse_brenda_raw_output(brenda_response)
+
+
+def parse_brenda_raw_output(raw):
+    """
+    Parses raw BRENDA string output into a dict.
+    """
     # BRENDA returns a string, where entries are separated by '!'.
     # Each entry consists of several key value pairs, separated by '#'.
     # The key is separated from the value by '*'.
-
     treated_output = [{item.split('*')[0]: item.split('*')[1]
-                       for item in entry.split('#') if len(item.split('*')) > 1} 
-                      for entry in brenda_response.split('!')]
+                        for item in entry.split('#') if len(item.split('*')) > 1} 
+                        for entry in raw.split('!')]
+    
+    if 'turnoverNumber' in treated_output:
+        treated_output['turnoverNumber'] = float(treated_output['turnoverNumber'])
 
     return treated_output
 
 
 def brenda_entry_is_wild_type(entry):
-    "True if this entry represents a wild-type measurement"
+    "True if this entry (from BRENDA) represents a wild-type measurement"
     return entry.haskey('commentary') and 'wild' in entry['commentary']
-
-
-
