@@ -4,6 +4,9 @@ import os
 
 
 def brenda_info(EC_number, brenda_email="", brenda_pass=""):
+    """
+    Returns raw output string from BRENDA for an EC number.
+    """
     
     # in some intranets an issue: how to use a web proxy for WS. Here
     # we assume a set environment variable 'http_proxy'.·
