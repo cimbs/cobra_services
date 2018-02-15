@@ -1,3 +1,4 @@
+import re
 from Bio.KEGG import REST
 from Bio.SeqUtils import molecular_weight
 
@@ -6,6 +7,7 @@ def ecnumber_to_genes(ECnumber):
     """
     Dictionary of organism => gene for a reaction.
     """
+    # TODO: Make sure the genes addresses are stripped correctly.
 
     text = REST.kegg_get('ec:' + ECnumber).read()
 
@@ -13,17 +15,24 @@ def ecnumber_to_genes(ECnumber):
         start_index = text.index('GENES') + 5
         end_index = text.index('DBLINKS')
     except ValueError:
-        return {}
-
+        ec_index = text.find('Now EC ')
+        if ec_index == -1:
+            return {}
+        else:
+            new_ec = text[start_index+6: start_index+20].split(',')[0]
+            return ecnumber_to_genes(new_ec)
     gene_list = text[start_index: end_index].split('\n')
     gene_list = [g.strip().split(': ') for g in gene_list]
 
     gene_dict = {}
-    for g in gene_list:
-        if len(g) > 1:
-            org = g[0]
-            genes = g[1].split(' ')
-            gene_dict[org] = genes
+    for entry in gene_list:
+            split_seq = list(filter(None, re.split("[, \-:()]+", entry)))
+            f_seq = []
+            if split_seq == []:
+                continue
+            for entry in split_seq:
+                f_seq.append(entry.strip())
+            gene_dict[f_seq[0]] = list(filter(lambda x: x.isdigit(), f_seq))
 
     return gene_dict
 
