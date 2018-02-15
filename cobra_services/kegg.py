@@ -38,12 +38,12 @@ def kegggene_to_sequence(organism, kegggene):
     start_index = text.index('AASEQ')
     end_index = text.index('NTSEQ')
 
-    raw_code = text[start_index : end_index].split('\n', 1)[1]
+    raw_code = text[start_index: end_index].split('\n', 1)[1]
     code = raw_code.split('\n')
     sequence = ''
     for piece in code:
         sequence = sequence + piece.strip()
-    
+
     return sequence
 
 
@@ -62,6 +62,6 @@ def kegggene_to_uniprotid(organism, kegggene):
     uni_index = text.find('UniProt')
 
     if uni_index != -1:
-        return text[uni_index + 9 : uni_index + 15]
+        return text[uni_index + 9: uni_index + 15]
     else:
         return None

@@ -4,7 +4,7 @@ import json
 
 def cts_brenda_to_kegg(brenda_name, max_requests=3):
     """
-    Returns the KEGG id of a compound, from the name 
+    Returns the KEGG id of a compound, from the name
     on BRENDA.
     """
 
@@ -25,4 +25,3 @@ def cts_brenda_to_kegg(brenda_name, max_requests=3):
         return kegg_ids[0]
     else:
         return None
-
